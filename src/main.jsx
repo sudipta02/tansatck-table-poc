@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 
 import "./index.css";
@@ -15,10 +15,23 @@ import {
   getSortedRowModel,
   flexRender,
 } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { rankItem, compareItems } from "@tanstack/match-sorter-utils";
 
 import { makeData } from "./makeData";
+import { SearchInput } from "./Search";
+import { matchSorter } from "match-sorter";
+import { Input } from "./components/ui/input";
+import { cn } from "./lib/utils";
 
 const fuzzyFilter = (row, columnId, value, addMeta) => {
   // Rank the item
@@ -57,39 +70,33 @@ function App() {
   const columns = React.useMemo(
     () => [
       {
-        header: "Name",
+        accessorKey: "firstName",
+        cell: (info) => info.getValue(),
         footer: (props) => props.column.id,
-        columns: [
-          {
-            accessorKey: "firstName",
-            cell: (info) => info.getValue(),
-            footer: (props) => props.column.id,
-            filterFn: "arrIncludesSome"
-          },
-          {
-            accessorFn: (row) => row.lastName,
-            id: "lastName",
-            cell: (info) => info.getValue(),
-            header: () => <span>Last Name</span>,
-            footer: (props) => props.column.id,
-          },
-          {
-            accessorFn: (row) => `${row.firstName} ${row.lastName}`,
-            id: "fullName",
-            header: "Full Name",
-            cell: (info) => info.getValue(),
-            footer: (props) => props.column.id,
-            filterFn: "fuzzy",
-            sortingFn: fuzzySort,
-          },
-        ],
+        filterFn: "arrIncludesSome",
+      },
+      {
+        accessorFn: (row) => row.lastName,
+        id: "lastName",
+        cell: (info) => info.getValue(),
+        header: () => <span>Last Name</span>,
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorFn: (row) => `${row.firstName} ${row.lastName}`,
+        id: "fullName",
+        header: "Full Name",
+        cell: (info) => info.getValue(),
+        footer: (props) => props.column.id,
+        filterFn: "fuzzy",
+        sortingFn: fuzzySort,
       },
     ],
     []
   );
 
-  const [data, setData] = React.useState(() => makeData(50000));
-  const refreshData = () => setData((old) => makeData(50000));
+  const [data, setData] = React.useState(() => makeData(500));
+  const refreshData = () => setData((old) => makeData(500));
 
   const table = useReactTable({
     data,
@@ -101,6 +108,8 @@ function App() {
       columnFilters,
       globalFilter,
     },
+    columnResizeMode: "onChange",
+    enableColumnResizing: true,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: fuzzyFilter,
@@ -124,8 +133,10 @@ function App() {
     }
   }, [table.getState().columnFilters[0]?.id]);
 
+  const tableSize = table.getTotalSize();
+
   return (
-    <div className="p-2">
+    <div className="p-2 flex flex-col justify-center items-center">
       <div>
         <DebouncedInput
           value={globalFilter ?? ""}
@@ -135,42 +146,72 @@ function App() {
         />
       </div>
       <div className="h-2" />
-      <table>
+      <table
+        className={cn(
+          `w-[${tableSize}] border border-solid border-[#d0aaaa] rounded-md border-collapse my-[25px] mx-0`
+        )}
+      >
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id} className="trHead">
+            <tr
+              key={headerGroup.id}
+              className="trHead flex bg-[#009879] text-slate-50 text-left font-bold"
+            >
               {headerGroup.headers.map((header) => {
-                console.log(header.column);
+                const width = header.getSize();
+                console.log({ width });
                 return (
-                  <th key={header.id} colSpan={header.colSpan}>
-                    {header.isPlaceholder ? null : (
-                      <>
-                        <div
-                          {...{
-                            className: header.column.getCanSort()
-                              ? "cursor-pointer select-none"
-                              : "",
-                            onClick: header.column.getToggleSortingHandler(),
-                          }}
-                        >
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                          {{
-                            asc: " 🔼",
-                            desc: " 🔽",
-                          }[header.column.getIsSorted()] ?? null}
-                          {console.log(header.column.getIsSorted())}
-                        </div>
-                        {header.column.getCanFilter() ? (
-                          <div>
-                            <Filter column={header.column} table={table} />
-                          </div>
-                        ) : null}
-                      </>
-                    )}
-                  </th>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="">
+                      <th
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        // className="py-[12px] px-[15px] w-[wid]"
+                        className={cn(`py-[12px] px-[15px] w-[${width}]`)}
+                      >
+                        {header.isPlaceholder ? null : (
+                          <>
+                            <div
+                              {...{
+                                className: header.column.getCanSort()
+                                  ? "cursor-pointer select-none"
+                                  : "",
+                                onClick:
+                                  header.column.getToggleSortingHandler(),
+                              }}
+                            >
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                              {{
+                                asc: " 🔼",
+                                desc: " 🔽",
+                              }[header.column.getIsSorted()] ?? null}
+                              {console.log(header.column.getIsSorted())}
+                              <div
+                                onMouseDown={header.getResizeHandler()}
+                                onTouchStart={header.getResizeHandler()}
+                                className={`resizer ${
+                                  header.column.getIsResizing()
+                                    ? "isResizing"
+                                    : ""
+                                }`}
+                              />
+                            </div>
+                            {header.column.getCanFilter() ? (
+                              <div>
+                                {/* <Filter column={header.column} table={table} /> */}
+                              </div>
+                            ) : null}
+                          </>
+                        )}
+                      </th>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <Filter2 column={header.column} />
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 );
               })}
             </tr>
@@ -179,10 +220,10 @@ function App() {
         <tbody>
           {table.getRowModel().rows.map((row) => {
             return (
-              <tr key={row.id}>
+              <tr key={row.id} className="flex">
                 {row.getVisibleCells().map((cell) => {
                   return (
-                    <td key={cell.id}>
+                    <td key={cell.id} className="py-[12px] px-[15px]">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -269,6 +310,35 @@ function App() {
   );
 }
 
+function Filter2({ column }) {
+  const [value, setValue] = useState("");
+  const sortedUniqueValues = React.useMemo(
+    () => Array.from(column.getFacetedUniqueValues().keys()).sort(),
+    [column.getFacetedUniqueValues()]
+  );
+
+  console.log(value);
+  const options = matchSorter(sortedUniqueValues, value);
+
+  return (
+    <>
+      <SearchInput setValue={setValue} />
+      <DropdownMenuSeparator />
+      <FacetedUniueValues options={options} />
+    </>
+  );
+}
+
+function FacetedUniueValues({ options }) {
+  return options.map((item) => (
+    <DropdownMenuItem onClick={(e) => e.preventDefault()}>
+      <DropdownMenuCheckboxItem onSelect={(e) => e.preventDefault()}>
+        {item}
+      </DropdownMenuCheckboxItem>
+    </DropdownMenuItem>
+  ));
+}
+
 function Filter({ column, table }) {
   const firstValue = table
     .getPreFilteredRowModel()
@@ -277,53 +347,14 @@ function Filter({ column, table }) {
   const columnFilterValue = column.getFilterValue();
 
   const sortedUniqueValues = React.useMemo(
-    () =>
-      typeof firstValue === "number"
-        ? []
-        : Array.from(column.getFacetedUniqueValues().keys()).sort(),
+    () => Array.from(column.getFacetedUniqueValues().keys()).sort(),
     [column.getFacetedUniqueValues()]
   );
 
-  return typeof firstValue === "number" ? (
-    <div>
-      <div className="flex space-x-2">
-        <DebouncedInput
-          type="number"
-          min={Number(column.getFacetedMinMaxValues()?.[0] ?? "")}
-          max={Number(column.getFacetedMinMaxValues()?.[1] ?? "")}
-          value={columnFilterValue?.[0] ?? ""}
-          onChange={(value) =>
-            column.setFilterValue((old) => [value, old?.[1]])
-          }
-          placeholder={`Min ${
-            column.getFacetedMinMaxValues()?.[0]
-              ? `(${column.getFacetedMinMaxValues()?.[0]})`
-              : ""
-          }`}
-          className="w-24 border shadow rounded"
-        />
-        <DebouncedInput
-          type="number"
-          min={Number(column.getFacetedMinMaxValues()?.[0] ?? "")}
-          max={Number(column.getFacetedMinMaxValues()?.[1] ?? "")}
-          value={columnFilterValue?.[1] ?? ""}
-          onChange={(value) =>
-            column.setFilterValue((old) => [old?.[0], value])
-          }
-          placeholder={`Max ${
-            column.getFacetedMinMaxValues()?.[1]
-              ? `(${column.getFacetedMinMaxValues()?.[1]})`
-              : ""
-          }`}
-          className="w-24 border shadow rounded"
-        />
-      </div>
-      <div className="h-1" />
-    </div>
-  ) : (
+  return (
     <>
       <datalist id={column.id + "list"}>
-        {sortedUniqueValues.slice(0, 5000).map((value) => (
+        {sortedUniqueValues.slice(0, 500).map((value) => (
           <option value={value} key={value} />
         ))}
       </datalist>
