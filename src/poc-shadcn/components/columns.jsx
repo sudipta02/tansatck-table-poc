@@ -59,8 +59,13 @@ export const columns = [
   },
   {
     accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+    header: ({ column, table }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Status"
+        options={statuses}
+        table={table}
+      />
     ),
     cell: ({ row }) => {
       const status = statuses.find(
@@ -86,8 +91,13 @@ export const columns = [
   },
   {
     accessorKey: "priority",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Priority" />
+    header: ({ column, table }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Priority"
+        options={priorities}
+        table={table}
+      />
     ),
     cell: ({ row }) => {
       const priority = priorities.find(

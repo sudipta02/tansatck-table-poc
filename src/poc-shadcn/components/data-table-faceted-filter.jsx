@@ -19,6 +19,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import { Filter } from "lucide-react";
 
 export function DataTableFacetedFilter({ column, title, options }) {
   const facets = column?.getFacetedUniqueValues();
@@ -28,8 +29,9 @@ export function DataTableFacetedFilter({ column, title, options }) {
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 border-dashed">
-          <PlusCircledIcon className="mr-2 h-4 w-4" />
-          {title}
+          <Filter className="h-3.5 w-3.5" />
+          {/* <PlusCircledIcon className="mr-2 h-4 w-4" /> */}
+          {/* {title} */}
           {selectedValues?.size > 0 && (
             <>
               <Separator orientation="vertical" className="mx-2 h-4" />

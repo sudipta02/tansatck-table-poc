@@ -5,6 +5,8 @@ import {
   EyeNoneIcon,
 } from "@radix-ui/react-icons";
 
+import { Filter } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,8 +16,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
-export function DataTableColumnHeader({ column, title, className }) {
+export function DataTableColumnHeader({ column, title, className, options }) {
   if (!column.getCanSort()) {
     return <div className={cn(className)}>{title}</div>;
   }
@@ -55,6 +58,13 @@ export function DataTableColumnHeader({ column, title, className }) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      {(title === "Priority" || title === "Status") && (
+        <DataTableFacetedFilter
+          column={column}
+          title={title}
+          options={options}
+        />
+      )}
     </div>
   );
 }
