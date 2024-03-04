@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Poc1 } from "./poc1/main";
-import { PocShadcn } from "./poc-shadcn/main";
+import TaskPage from "./poc-shadcn/page";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/poc1" element={<Poc1 />} />
-        <Route path="/poc-shadcn" element={<PocShadcn />} />
+        <Route path="/poc-shadcn" element={<TaskPage />} />
       </Routes>
     </Router>
   );
