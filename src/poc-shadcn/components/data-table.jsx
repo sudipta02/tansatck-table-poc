@@ -22,6 +22,8 @@ import {
 import { DataTablePagination } from "../components/data-table-pagination";
 import { DataTableToolbar } from "../components/data-table-toolbar";
 
+import "./table.css";
+
 export function DataTable({ columns, data }) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -37,6 +39,11 @@ export function DataTable({ columns, data }) {
       rowSelection,
       columnFilters,
     },
+    // defaultColumn: {
+    //   size: 200,
+    //   minSize: 60,
+    //   maxSize: 1000,
+    // },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -48,26 +55,56 @@ export function DataTable({ columns, data }) {
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    columnResizeMode: "onChange",
+    enableColumnResizing: true,
   });
+
+  const totalTableWidth = table.getTotalSize();
 
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
       <div className="rounded-md border">
-        <Table>
+        <table
+          style={{
+            width: "100%",
+            // borderTop: "solid 1px #424242",
+            // borderLeft: "solid 1px #424242",
+          }}
+        >
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
+                  const dynamicWidth = header.getSize();
+                  console.log({ headerWidth: dynamicWidth });
                   return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
+                    <th
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      // className={`w-[${dynamicWidth}px] bg-slate-300`}
+                      style={{
+                        width: header.getSize(),
+                        // borderRight: "solid 2px rgba(0,0,0,0.1)",
+                        // boxShadow: "1px 0px 0.3px 0.3px rgba(0,0,0,0.1)",
+                        // borderBottom: "solid 1px #424242",
+                      }}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                    </TableHead>
+                      <div
+                        onMouseDown={header.getResizeHandler()}
+                        onTouchStart={header.getResizeHandler()}
+                        // onDoubleClick={() => header.column.resetSize()}
+                        className={`resizer ${
+                          header.column.getIsResizing() ? "isResizing" : ""
+                        }`}
+                      />
+                    </th>
                   );
                 })}
               </TableRow>
@@ -80,14 +117,27 @@ export function DataTable({ columns, data }) {
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    const dynamicWidth = cell.column.getSize();
+                    // console.log({ cellWidth: dynamicWidth });
+                    return (
+                      <td
+                        key={cell.id}
+                        // className={`w-[${dynamicWidth}px] bg-orange-100`}
+                        style={{
+                          width: cell.column.getSize(),
+                          padding: "5px 0",
+                          // borderRight: "solid 1px #424242",
+                          // borderBottom: "solid 1px #424242",
+                        }}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    );
+                  })}
                 </TableRow>
               ))
             ) : (
@@ -101,7 +151,7 @@ export function DataTable({ columns, data }) {
               </TableRow>
             )}
           </TableBody>
-        </Table>
+        </table>
       </div>
       <DataTablePagination table={table} />
     </div>

@@ -20,51 +20,60 @@ export const columns = [
       />
     ),
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
+      <div className="flex justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          className="translate-y-[2px]"
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
   },
   {
     accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Task" />
+    header: ({ column, header }) => (
+      <DataTableColumnHeader column={column} title="Task" header={header} />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        {row.getValue("id")}
+      </div>
+    ),
     enableSorting: false,
     enableHiding: false,
   },
   {
     accessorKey: "title",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+    header: ({ column, header }) => (
+      <DataTableColumnHeader column={column} title="Title" header={header} />
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
 
       return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
-          <span className="max-w-[500px] truncate font-medium">
+        <div className="flex space-x-2 ml-2">
+          {label && <Badge variant="secondary">{label.label}</Badge>}
+          {/* <span className="truncate font-normal max-w-[300px]">
             {row.getValue("title")}
-          </span>
+          </span> */}
         </div>
       );
     },
+    // size: 500,
+    enableResizing: true,
   },
   {
     accessorKey: "status",
-    header: ({ column, table }) => (
+    header: ({ column, table, header }) => (
       <DataTableColumnHeader
         column={column}
         title="Status"
         options={statuses}
         table={table}
+        header={header}
       />
     ),
     cell: ({ row }) => {
@@ -77,7 +86,7 @@ export const columns = [
       }
 
       return (
-        <div className="flex w-[100px] items-center">
+        <div className="flex items-center ml-2">
           {status.icon && (
             <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
           )}
@@ -88,15 +97,17 @@ export const columns = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
+    enableResizing: true,
   },
   {
     accessorKey: "priority",
-    header: ({ column, table }) => (
+    header: ({ column, table, header }) => (
       <DataTableColumnHeader
         column={column}
         title="Priority"
         options={priorities}
         table={table}
+        header={header}
       />
     ),
     cell: ({ row }) => {
@@ -109,7 +120,7 @@ export const columns = [
       }
 
       return (
-        <div className="flex items-center">
+        <div className="flex items-center ml-2">
           {priority.icon && (
             <priority.icon className="mr-2 h-4 w-4 text-muted-foreground" />
           )}
@@ -120,9 +131,11 @@ export const columns = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
+    enableResizing: true,
   },
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,
+    size: 50,
   },
 ];

@@ -18,19 +18,30 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
-export function DataTableColumnHeader({ column, title, className, options }) {
+export function DataTableColumnHeader({
+  column,
+  title,
+  className,
+  options,
+  header,
+}) {
   if (!column.getCanSort()) {
     return <div className={cn(className)}>{title}</div>;
   }
 
+  // console.log(header.getSize());
+
   return (
-    <div className={cn("flex items-center space-x-2", className)}>
+    <div
+      className={cn("flex items-center space-x-2", className)}
+      // style={{ width: `${header.getSize()}` }}
+    >
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             size="sm"
-            className="-ml-3 h-8 data-[state=open]:bg-accent"
+            className="ml-3 h-8 data-[state=open]:bg-accent"
           >
             <span>{title}</span>
             {column.getIsSorted() === "desc" ? (

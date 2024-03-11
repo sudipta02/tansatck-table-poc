@@ -7,23 +7,25 @@ const Table = React.forwardRef(({ className, ...props }, ref) => (
     <table
       ref={ref}
       className={cn("w-full caption-bottom text-sm", className)}
-      {...props} />
+      {...props}
+    />
   </div>
-))
-Table.displayName = "Table"
+));
+Table.displayName = "Table";
 
 const TableHeader = React.forwardRef(({ className, ...props }, ref) => (
   <thead ref={ref} className={cn("[&_tr]:border-b", className)} {...props} />
-))
-TableHeader.displayName = "TableHeader"
+));
+TableHeader.displayName = "TableHeader";
 
 const TableBody = React.forwardRef(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
     className={cn("[&_tr:last-child]:border-0", className)}
-    {...props} />
-))
-TableBody.displayName = "TableBody"
+    {...props}
+  />
+));
+TableBody.displayName = "TableBody";
 
 const TableFooter = React.forwardRef(({ className, ...props }, ref) => (
   <tfoot
@@ -32,9 +34,10 @@ const TableFooter = React.forwardRef(({ className, ...props }, ref) => (
       "border-t bg-slate-100/50 font-medium [&>tr]:last:border-b-0 dark:bg-slate-800/50",
       className
     )}
-    {...props} />
-))
-TableFooter.displayName = "TableFooter"
+    {...props}
+  />
+));
+TableFooter.displayName = "TableFooter";
 
 const TableRow = React.forwardRef(({ className, ...props }, ref) => (
   <tr
@@ -43,9 +46,10 @@ const TableRow = React.forwardRef(({ className, ...props }, ref) => (
       "border-b transition-colors hover:bg-slate-100/50 data-[state=selected]:bg-slate-100 dark:hover:bg-slate-800/50 dark:data-[state=selected]:bg-slate-800",
       className
     )}
-    {...props} />
-))
-TableRow.displayName = "TableRow"
+    {...props}
+  />
+));
+TableRow.displayName = "TableRow";
 
 const TableHead = React.forwardRef(({ className, ...props }, ref) => (
   <th
@@ -54,8 +58,9 @@ const TableHead = React.forwardRef(({ className, ...props }, ref) => (
       "h-12 px-4 text-left align-middle font-medium text-slate-500 [&:has([role=checkbox])]:pr-0 dark:text-slate-400",
       className
     )}
-    {...props} />
-))
+    {...props}
+  />
+));
 TableHead.displayName = "TableHead"
 
 const TableCell = React.forwardRef(({ className, ...props }, ref) => (
