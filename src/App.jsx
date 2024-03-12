@@ -6,8 +6,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/poc1" element={<Poc1 />} />
-        <Route path="/poc-shadcn" element={<TaskPage />} />
+        <Route path="/tansatck-table-poc">
+          <Route path="poc1" element={<Poc1 />} />
+          <Route path="poc-shadcn" element={<TaskPage />} />
+        </Route>
       </Routes>
     </Router>
   );
