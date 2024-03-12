@@ -69,7 +69,13 @@ export function DataTableColumnHeader({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      {(title === "Priority" || title === "Status") && (
+      {(title === "Priority" ||
+        title === "Status" ||
+        title === "Task" ||
+        title === "Destination Name" ||
+        title === "Destination ID" ||
+        title === "Source Name" ||
+        title === "Source ID") && (
         <DataTableFacetedFilter
           column={column}
           title={title}

@@ -7,6 +7,22 @@ import { DataTableRowActions } from "./data-table-row-actions";
 
 export const columns = [
   {
+    accessorKey: "id",
+    header: ({ column, header }) => (
+      <DataTableColumnHeader column={column} title="Task" header={header} />
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        {row.getValue("id")}
+      </div>
+    ),
+    // enableSorting: false,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+    enableHiding: false,
+  },
+  {
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -31,18 +47,101 @@ export const columns = [
     ),
     enableSorting: false,
     enableHiding: false,
+    size: 30,
   },
+
   {
-    accessorKey: "id",
+    accessorKey: "date",
     header: ({ column, header }) => (
-      <DataTableColumnHeader column={column} title="Task" header={header} />
+      <DataTableColumnHeader column={column} title="Date" header={header} />
     ),
     cell: ({ row }) => (
       <div className="flex items-center justify-center">
-        {row.getValue("id")}
+        {row.getValue("date")}
       </div>
     ),
-    enableSorting: false,
+    size: 220,
+    // enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "destination_id",
+    header: ({ column, header }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Destination ID"
+        header={header}
+      />
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        {row.getValue("destination_id")}
+      </div>
+    ),
+    // enableSorting: false,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "destination_name",
+    header: ({ column, header }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Destination Name"
+        header={header}
+      />
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        {row.getValue("destination_name")}
+      </div>
+    ),
+    // enableSorting: false,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "source_name",
+    header: ({ column, header }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Source Name"
+        header={header}
+      />
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        {row.getValue("source_name")}
+      </div>
+    ),
+    // enableSorting: false,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "source_id",
+    header: ({ column, header }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Source ID"
+        header={header}
+      />
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        {row.getValue("source_id")}
+      </div>
+    ),
+    // enableSorting: false,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
     enableHiding: false,
   },
   {
@@ -135,7 +234,11 @@ export const columns = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        <DataTableRowActions row={row} />
+      </div>
+    ),
     size: 50,
   },
 ];

@@ -39,11 +39,17 @@ export function DataTable({ columns, data }) {
       rowSelection,
       columnFilters,
     },
-    // defaultColumn: {
-    //   size: 200,
-    //   minSize: 60,
-    //   maxSize: 1000,
-    // },
+    initialState: {
+      columnPinning: {
+        left: ["select"],
+        right: ["actions"],
+      },
+    },
+    defaultColumn: {
+      size: 150,
+      minSize: 50,
+      maxSize: 600,
+    },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -57,6 +63,7 @@ export function DataTable({ columns, data }) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
     columnResizeMode: "onChange",
     enableColumnResizing: true,
+    enableColumnPinning: true,
   });
 
   const totalTableWidth = table.getTotalSize();
