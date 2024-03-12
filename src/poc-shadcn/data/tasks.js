@@ -1027,7 +1027,7 @@ export const tasks = [
   {
     id: "TASK-2645",
     title:
-      "Synthesizing the system won't do anything, we need to navigate the multi-byte HDD firewall!",
+      "Synthesizing the system won't do anything, we need to navigate the multi-byte HDD fireall!",
     status: "todo",
     label: "documentation",
     priority: "medium",
