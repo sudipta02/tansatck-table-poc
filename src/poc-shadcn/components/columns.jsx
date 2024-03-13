@@ -47,9 +47,8 @@ export const columns = [
     ),
     enableSorting: false,
     enableHiding: false,
-    size: 30,
+    size: 50,
   },
-
   {
     accessorKey: "date",
     header: ({ column, header }) => (
@@ -60,7 +59,7 @@ export const columns = [
         {row.getValue("date")}
       </div>
     ),
-    size: 220,
+    // size: 220,
     // enableSorting: false,
     enableHiding: false,
   },

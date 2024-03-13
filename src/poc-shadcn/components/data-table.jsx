@@ -21,6 +21,7 @@ import {
 
 import { DataTablePagination } from "../components/data-table-pagination";
 import { DataTableToolbar } from "../components/data-table-toolbar";
+import { useVirtualizer } from "@tanstack/react-virtual";
 
 import "./table.css";
 
@@ -46,7 +47,7 @@ export function DataTable({ columns, data }) {
       },
     },
     defaultColumn: {
-      size: 150,
+      size: 200,
       minSize: 50,
       maxSize: 600,
     },
@@ -66,32 +67,57 @@ export function DataTable({ columns, data }) {
     enableColumnPinning: true,
   });
 
+  const visibleColumns = table.getVisibleLeafColumns();
+  const tableContainerRef = React.useRef(null);
+
+  const columnVirtualizer = useVirtualizer({
+    count: visibleColumns.length,
+    estimateSize: (index) => visibleColumns[index].getSize(),
+    getScrollElement: () => tableContainerRef.current,
+    horizontal: true,
+    overscan: 3,
+  });
+  const virtualColumns = columnVirtualizer.getVirtualItems();
+
+  let virtualPaddingLeft;
+  let virtualPaddingRight;
+
+  if (columnVirtualizer && virtualColumns?.length) {
+    virtualPaddingLeft = virtualColumns[0]?.start ?? 0;
+    virtualPaddingRight =
+      columnVirtualizer.getTotalSize() -
+      (virtualColumns[virtualColumns.length - 1]?.end ?? 0);
+  }
   const totalTableWidth = table.getTotalSize();
 
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-auto" ref={tableContainerRef}>
         <table
           style={{
-            width: "100%",
+            width: totalTableWidth,
             // borderTop: "solid 1px #424242",
             // borderLeft: "solid 1px #424242",
           }}
         >
-          <TableHeader>
+          <thead>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  const dynamicWidth = header.getSize();
-                  console.log({ headerWidth: dynamicWidth });
+              <tr key={headerGroup.id}>
+                {virtualPaddingLeft ? (
+                  //fake empty column to the left for virtualization scroll padding
+                  <th style={{ display: "flex", width: virtualPaddingLeft }} />
+                ) : null}
+                {virtualColumns.map((vc) => {
+                  const header = headerGroup.headers[vc.index];
                   return (
                     <th
                       key={header.id}
-                      colSpan={header.colSpan}
+                      // colSpan={header.colSpan}
                       // className={`w-[${dynamicWidth}px] bg-slate-300`}
                       style={{
                         width: header.getSize(),
+                        // display: "flex",
                         // borderRight: "solid 2px rgba(0,0,0,0.1)",
                         // boxShadow: "1px 0px 0.3px 0.3px rgba(0,0,0,0.1)",
                         // borderBottom: "solid 1px #424242",
@@ -114,9 +140,13 @@ export function DataTable({ columns, data }) {
                     </th>
                   );
                 })}
-              </TableRow>
+                {virtualPaddingRight ? (
+                  //fake empty column to the right for virtualization scroll padding
+                  <th style={{ display: "flex", width: virtualPaddingRight }} />
+                ) : null}
+              </tr>
             ))}
-          </TableHeader>
+          </thead>
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
