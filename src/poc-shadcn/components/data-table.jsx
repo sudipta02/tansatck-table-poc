@@ -91,9 +91,12 @@ export function DataTable({ columns, data }) {
   const totalTableWidth = table.getTotalSize();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 ">
       <DataTableToolbar table={table} />
-      <div className="rounded-md border overflow-auto" ref={tableContainerRef}>
+      <div
+        className="rounded-md border overflow-auto box-shadow-custom table-container"
+        ref={tableContainerRef}
+      >
         <table
           style={{
             width: totalTableWidth,
