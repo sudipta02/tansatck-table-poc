@@ -47,7 +47,7 @@ export const columns = [
     ),
     enableSorting: false,
     enableHiding: false,
-    size: 50,
+    size: 150,
   },
   {
     accessorKey: "date",
@@ -238,6 +238,6 @@ export const columns = [
         <DataTableRowActions row={row} />
       </div>
     ),
-    size: 50,
+    size: 150,
   },
 ];
