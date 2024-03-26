@@ -47,3 +47,7 @@ export default function TaskPage() {
     </>
   );
 }
+
+export function Test() {
+  return <div>Test page</div>;
+}

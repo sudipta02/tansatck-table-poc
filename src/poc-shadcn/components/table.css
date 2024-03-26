@@ -38,6 +38,14 @@ th {
   border-left: 1px solid rgba(0,0,0,0.1);
 }
 
+.table-container tr:hover td {
+  background-color: rgb(241 245 249 / 1);
+}
+
+.table-container tr[data-state=selected] td {
+  background-color: rgb(241 245 249 / 1) !important;
+}
+
 table {
   /* box-shadow: -16px 11px 15px 4px rgba(0,0,0,0.1); */
   /* border-radius: 9px; */
