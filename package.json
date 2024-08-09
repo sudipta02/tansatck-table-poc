@@ -32,6 +32,8 @@
     "clsx": "^2.1.0",
     "cmdk": "^0.2.1",
     "fs-extra": "^11.2.0",
+    "jsoneditor": "^10.1.0",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.331.0",
     "match-sorter": "^6.3.4",
     "react": "^18.2.0",
